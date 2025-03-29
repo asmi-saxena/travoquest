@@ -1,0 +1,338 @@
+<app-header></app-header>
+
+<div class="dashboard-container">
+  <div class="grid">
+    <div class="col-12">
+      <div class="flex justify-content-between align-items-center mb-3">
+        <h1>My Quests</h1>
+        <p-button 
+          label="New Quest" 
+          icon="pi pi-plus" 
+          (onClick)="showNewQuestDialog()"
+        ></p-button>
+      </div>
+      
+      <p-tabView>
+        <p-tabPanel header="Active Quests">
+          <div class="grid">
+            @for (quest of activeQuests; track quest.id) {
+              <div class="col-12 md:col-6 lg:col-4">
+                <p-card [header]="quest.name" styleClass="quest-card">
+                  <ng-template pTemplate="header">
+                    <div class="quest-header" [ngClass]="quest.selectedTheme || 'default'">
+                      <h3>{{ quest.name }}</h3>
+                      <span class="quest-status" [ngClass]="quest.status">{{ quest.status }}</span>
+                    </div>
+                  </ng-template>
+                  
+                  <div class="quest-info">
+                    <p><i class="pi pi-users"></i> {{ quest.members.length }} adventurers</p>
+                    
+                    @if (quest.selectedTimeframe) {
+                      <p>
+                        <i class="pi pi-calendar"></i> 
+                        {{ quest.selectedTimeframe.startDate | date:'mediumDate' }} - 
+                        {{ quest.selectedTimeframe.endDate | date:'mediumDate' }}
+                      </p>
+                    } @else {
+                      <p><i class="pi pi-calendar"></i> Dates not yet decided</p>
+                    }
+                    
+                    @if (quest.selectedPlace) {
+                      <p><i class="pi pi-map-marker"></i> {{ quest.selectedPlace }}</p>
+                    }
+                    
+                    @if (quest.selectedTheme) {
+                      <p><i class="pi pi-tag"></i> {{ quest.selectedTheme }}</p>
+                    }
+                  </div>
+                  
+                  <ng-template pTemplate="footer">
+                    <div class="flex justify-content-between">
+                      <p-button 
+                        label="Details" 
+                        styleClass="p-button-text" 
+                        (onClick)="openQuestDetails(quest)"
+                      ></p-button>
+                      <p-button 
+                        label="Add Preference" 
+                        styleClass="p-button-outlined" 
+                        (onClick)="showPreferenceDialog(quest)"
+                      ></p-button>
+                    </div>
+                  </ng-template>
+                </p-card>
+              </div>
+            }
+            
+            @if (activeQuests.length === 0) {
+              <div class="col-12 text-center py-6">
+                <i class="pi pi-compass" style="font-size: 3rem; color: #cfd8dc;"></i>
+                <h3>No active quests yet</h3>
+                <p>Start a new quest adventure with your friends!</p>
+                <p-button 
+                  label="Create Quest" 
+                  icon="pi pi-plus" 
+                  (onClick)="showNewQuestDialog()"
+                ></p-button>
+              </div>
+            }
+          </div>
+        </p-tabPanel>
+        
+        <p-tabPanel header="Completed Quests">
+          <div class="grid">
+            @for (quest of completedQuests; track quest.id) {
+              <div class="col-12 md:col-6 lg:col-4">
+                <p-card [header]="quest.name" styleClass="quest-card">
+                  <ng-template pTemplate="header">
+                    <div class="quest-header completed" [ngClass]="quest.selectedTheme || 'default'">
+                      <h3>{{ quest.name }}</h3>
+                      <span class="quest-status completed">completed</span>
+                    </div>
+                  </ng-template>
+                  
+                  <div class="quest-info">
+                    <p><i class="pi pi-users"></i> {{ quest.members.length }} adventurers</p>
+                    
+                    @if (quest.selectedTimeframe) {
+                      <p>
+                        <i class="pi pi-calendar"></i> 
+                        {{ quest.selectedTimeframe.startDate | date:'mediumDate' }} - 
+                        {{ quest.selectedTimeframe.endDate | date:'mediumDate' }}
+                      </p>
+                    }
+                    
+                    @if (quest.selectedPlace) {
+                      <p><i class="pi pi-map-marker"></i> {{ quest.selectedPlace }}</p>
+                    }
+                    
+                    @if (quest.selectedTheme) {
+                      <p><i class="pi pi-tag"></i> {{ quest.selectedTheme }}</p>
+                    }
+                  </div>
+                  
+                  <ng-template pTemplate="footer">
+                    <p-button 
+                      label="View Memories" 
+                      styleClass="p-button-text" 
+                      (onClick)="openQuestDetails(quest)"
+                    ></p-button>
+                  </ng-template>
+                </p-card>
+              </div>
+            }
+            
+            @if (completedQuests.length === 0) {
+              <div class="col-12 text-center py-6">
+                <i class="pi pi-flag" style="font-size: 3rem; color: #cfd8dc;"></i>
+                <h3>No completed quests yet</h3>
+                <p>Your adventures will appear here once completed</p>
+              </div>
+            }
+          </div>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+    
+    <div class="col-12">
+      <div class="flex justify-content-between align-items-center mb-3">
+        <h2>My Availability</h2>
+        <p-button 
+          label="Add Time Off" 
+          icon="pi pi-calendar-plus" 
+          (onClick)="showCalendarDialog()"
+        ></p-button>
+      </div>
+      
+      <p-calendar 
+        [inline]="true" 
+        [showWeek]="true" 
+        [selectionMode]="'multiple'" 
+        [numberOfMonths]="3" 
+        [dateTemplate]="dateTemplate"
+        [minDate]="minDate"
+        readonlyInput="true"
+      ></p-calendar>
+      
+      <ng-template #dateTemplate let-date>
+        <div 
+          [ngClass]="{'user-time-off': isTimeOff(date)}" 
+          class="calendar-day-template"
+        >
+          {{ date.day }}
+        </div>
+      </ng-template>
+    </div>
+    
+    <div class="col-12 mt-4">
+      <app-message-board></app-message-board>
+    </div>
+  </div>
+</div>
+
+<!-- Dialog for adding new quest -->
+<p-dialog 
+  [(visible)]="showQuestDialog" 
+  [style]="{width: '500px'}" 
+  [modal]="true" 
+  [draggable]="false" 
+  [resizable]="false"
+  header="Create New Quest"
+>
+  <app-quest-form (onSave)="onQuestSaved($event)" (onCancel)="showQuestDialog = false"></app-quest-form>
+</p-dialog>
+
+<!-- Dialog for adding time off -->
+<p-dialog 
+  [(visible)]="showCalendarFormDialog" 
+  [style]="{width: '500px'}" 
+  [modal]="true" 
+  [draggable]="false" 
+  [resizable]="false"
+  header="Add Time Off"
+>
+  <app-calendar (onSave)="onTimeOffAdded($event)" (onCancel)="showCalendarFormDialog = false"></app-calendar>
+</p-dialog>
+
+<!-- Dialog for adding preference -->
+<p-dialog 
+  [(visible)]="showPreferenceFormDialog" 
+  [style]="{width: '500px'}" 
+  [modal]="true" 
+  [draggable]="false" 
+  [resizable]="false"
+  header="Add Your Preference"
+>
+  <div *ngIf="selectedQuest">
+    <app-quest-form 
+      [isPreferenceMode]="true" 
+      [questId]="selectedQuest.id" 
+      (onSave)="onPreferenceAdded($event)" 
+      (onCancel)="showPreferenceFormDialog = false"
+    ></app-quest-form>
+  </div>
+</p-dialog>
+
+<!-- Dialog for quest details -->
+<p-dialog 
+  [(visible)]="showQuestDetailsDialog" 
+  [style]="{width: '80vw', maxWidth: '1200px'}" 
+  [modal]="true" 
+  [draggable]="false" 
+  [resizable]="false"
+  [maximizable]="true"
+  [header]="selectedQuest?.name || 'Quest Details'"
+>
+  <div *ngIf="selectedQuest" class="quest-details">
+    <p-tabView>
+      <p-tabPanel header="Overview">
+        <div class="grid">
+          <div class="col-12 md:col-6">
+            <h3>Quest Information</h3>
+            <div class="quest-info-card">
+              <p><strong>Status:</strong> <span class="quest-status-badge" [ngClass]="selectedQuest.status">{{ selectedQuest.status }}</span></p>
+              <p><strong>Created by:</strong> {{ getCreatorName(selectedQuest.createdBy) }}</p>
+              <p><strong>Created on:</strong> {{ selectedQuest.createdAt | date:'medium' }}</p>
+              
+              <h4 class="mt-4">Time Frame</h4>
+              @if (selectedQuest.selectedTimeframe) {
+                <p>{{ selectedQuest.selectedTimeframe.startDate | date:'mediumDate' }} - {{ selectedQuest.selectedTimeframe.endDate | date:'mediumDate' }}</p>
+                <p><strong>Duration:</strong> {{ calculateDuration(selectedQuest.selectedTimeframe) }} days</p>
+              } @else {
+                <p>Not yet determined</p>
+              }
+              
+              <h4 class="mt-4">Destination</h4>
+              @if (selectedQuest.selectedPlace) {
+                <p>{{ selectedQuest.selectedPlace }}</p>
+              } @else {
+                <p>Not yet determined</p>
+              }
+              
+              <h4 class="mt-4">Theme</h4>
+              @if (selectedQuest.selectedTheme) {
+                <p>{{ selectedQuest.selectedTheme }}</p>
+              } @else {
+                <p>Not yet determined</p>
+              }
+            </div>
+          </div>
+          
+          <div class="col-12 md:col-6">
+            <h3>Adventurers</h3>
+            <div class="adventurers-card">
+              <ul class="adventurer-list">
+                @for (memberId of selectedQuest.members; track memberId) {
+                  <li class="adventurer-item">
+                    <p-avatar [label]="getMemberInitials(memberId)" shape="circle" class="mr-2"></p-avatar>
+                    <span>{{ getMemberName(memberId) }}</span>
+                    
+                    @if (selectedQuest.preferences && selectedQuest.preferences[memberId]) {
+                      <p-tag severity="success" value="Preferences Added" class="ml-2"></p-tag>
+                    } @else {
+                      <p-tag severity="warning" value="No Preferences" class="ml-2"></p-tag>
+                    }
+                  </li>
+                }
+              </ul>
+              
+              <p-button 
+                label="Add Friend" 
+                icon="pi pi-user-plus" 
+                styleClass="p-button-outlined mt-3"
+                (onClick)="showAddFriendDialog()"
+              ></p-button>
+            </div>
+          </div>
+        </div>
+      </p-tabPanel>
+      
+      <p-tabPanel header="Preferences">
+        <div class="grid">
+          <div class="col-12">
+            <p-table [value]="getPreferencesArray()" styleClass="p-datatable-sm">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Adventurer</th>
+                  <th>Preferred Dates</th>
+                  <th>Preferred Place</th>
+                  <th>Preferred Theme</th>
+                  <th>Notes</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-pref>
+                <tr>
+                  <td>{{ getMemberName(pref.userId) }}</td>
+                  <td>
+                    @if (pref.preferredTimeframe) {
+                      {{ pref.preferredTimeframe.startDate | date:'shortDate' }} - 
+                      {{ pref.preferredTimeframe.endDate | date:'shortDate' }}
+                    } @else {
+                      -
+                    }
+                  </td>
+                  <td>{{ pref.preferredPlace || '-' }}</td>
+                  <td>{{ pref.preferredTheme || '-' }}</td>
+                  <td>{{ pref.additionalNotes || '-' }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+            
+            <div class="flex justify-content-end mt-3">
+              <p-button 
+                label="Add My Preference" 
+                icon="pi pi-plus" 
+                (onClick)="showPreferenceDialog(selectedQuest)"
+              ></p-button>
+            </div>
+          </div>
+        </div>
+      </p-tabPanel>
+      
+      <p-tabPanel header="Discussion">
+        <app-message-board [questId]="selectedQuest.id"></app-message-board>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</p-dialog>

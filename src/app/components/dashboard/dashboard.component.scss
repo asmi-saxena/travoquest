@@ -1,0 +1,155 @@
+.dashboard-container {
+  padding: 2rem;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 70px);
+}
+
+.quest-card {
+  height: 100%;
+  transition: transform 0.2s;
+  
+  &:hover {
+    transform: translateY(-5px);
+  }
+}
+
+.quest-header {
+  padding: 1rem;
+  color: white;
+  border-radius: 6px 6px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  &.default {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  
+  &.beach {
+    background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+  }
+  
+  &.mountains {
+    background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+  }
+  
+  &.city {
+    background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+  }
+  
+  &.countryside {
+    background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+  }
+  
+  &.cultural {
+    background: linear-gradient(135deg, #f953c6 0%, #b91d73 100%);
+  }
+  
+  &.completed {
+    background: linear-gradient(135deg, #808080 0%, #3fada8 100%);
+  }
+  
+  h3 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+}
+
+.quest-status {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  
+  &.planning {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  &.confirmed {
+    background-color: rgba(105, 240, 174, 0.3);
+  }
+  
+  &.completed {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.quest-info {
+  padding: 1rem 0;
+  
+  p {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    
+    i {
+      margin-right: 0.5rem;
+      width: 18px;
+    }
+  }
+}
+
+.calendar-day-template {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  &.user-time-off {
+    background-color: rgba(46, 204, 113, 0.3);
+    border-radius: 50%;
+    font-weight: bold;
+  }
+}
+
+.quest-details {
+  .quest-info-card, .adventurers-card {
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    padding: 1rem;
+    height: 100%;
+  }
+  
+  .adventurer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    
+    .adventurer-item {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #e0e0e0;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+  
+  .quest-status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    
+    &.planning {
+      background-color: #ffe0b2;
+      color: #e65100;
+    }
+    
+    &.confirmed {
+      background-color: #c8e6c9;
+      color: #2e7d32;
+    }
+    
+    &.completed {
+      background-color: #d1c4e9;
+      color: #4527a0;
+    }
+  }
+}

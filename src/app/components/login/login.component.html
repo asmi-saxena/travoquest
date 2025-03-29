@@ -1,0 +1,85 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h2>{{ isRegisterMode ? 'Create Account' : 'Login to TravelQuest' }}</h2>
+      <p>{{ isRegisterMode ? 'Begin your adventure with us!' : 'Embark on your next group adventure!' }}</p>
+    </div>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      @if (isRegisterMode) {
+        <div class="field">
+          <label for="name">Full Name</label>
+          <input id="name" type="text" pInputText formControlName="name" class="w-full" />
+          @if (submitted && f['name'].errors) {
+            <small class="p-error">Name is required</small>
+          }
+        </div>
+        
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" pInputText formControlName="email" class="w-full" />
+          @if (submitted && f['email'].errors) {
+            <small class="p-error">Valid email is required</small>
+          }
+        </div>
+      }
+      
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" type="text" pInputText formControlName="username" class="w-full" />
+        @if (submitted && f['username'].errors) {
+          <small class="p-error">Username is required</small>
+        }
+      </div>
+      
+      <div class="field">
+        <label for="password">Password</label>
+        <p-password id="password" formControlName="password" [toggleMask]="true" styleClass="w-full"></p-password>
+        @if (submitted && f['password'].errors) {
+          <small class="p-error">
+            @if (f['password'].errors['required']) {
+              Password is required
+            } @else if (f['password'].errors['minlength']) {
+              Password must be at least 6 characters
+            }
+          </small>
+        }
+      </div>
+      
+      @if (isRegisterMode) {
+        <div class="field">
+          <label for="confirmPassword">Confirm Password</label>
+          <p-password id="confirmPassword" formControlName="confirmPassword" [toggleMask]="true" styleClass="w-full"></p-password>
+          @if (submitted && f['confirmPassword'].errors) {
+            <small class="p-error">
+              @if (f['confirmPassword'].errors['required']) {
+                Please confirm your password
+              } @else if (f['confirmPassword'].errors['matching']) {
+                Passwords don't match
+              }
+            </small>
+          }
+        </div>
+      }
+      
+      @if (errorMessage) {
+        <p-message severity="error" [text]="errorMessage" styleClass="w-full mb-4"></p-message>
+      }
+      
+      <div class="flex justify-content-between flex-wrap">
+        <p-button 
+          [label]="isRegisterMode ? 'Sign Up' : 'Login'" 
+          type="submit" 
+          styleClass="p-button-primary"
+          [loading]="loading"
+        ></p-button>
+        
+        <p-button 
+          [label]="isRegisterMode ? 'Back to Login' : 'Create Account'" 
+          (onClick)="toggleMode()" 
+          styleClass="p-button-text"
+        ></p-button>
+      </div>
+    </form>
+  </div>
+</div>
